@@ -50,12 +50,14 @@ A real-time location-based chat application built with Go and React. Visualize n
 - Node.js 18 or higher
 - npm or yarn
 
-### Installation
+### Installation & Local Development
+
+#### Backend Setup
 
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd "radius copy"
+   cd RadiusChat
    ```
 
 2. **Install Go dependencies**
@@ -63,36 +65,52 @@ A real-time location-based chat application built with Go and React. Visualize n
    go mod tidy
    ```
 
-3. **Install frontend dependencies**
-   ```bash
-   cd web
-   npm install
-   ```
-
-4. **Build the frontend**
-   ```bash
-   npm run build
-   cd ..
-   ```
-
-5. **Run the server**
+3. **Run the backend server**
    ```bash
    go run main.go
    ```
+   Backend will start on `http://localhost:8080`
 
-6. **Open your browser**
-   Navigate to `http://localhost:8080`
+#### Frontend Setup
 
-## Development
+1. **Navigate to web directory**
+   ```bash
+   cd web
+   ```
 
-To run the frontend in development mode with hot reload:
+2. **Install dependencies**
+   ```bash
+   npm install
+   ```
 
-```bash
-cd web
-npm run dev
-```
+3. **Run development server**
+   ```bash
+   npm run dev
+   ```
+   Frontend will start on `http://localhost:3000`
 
-This will start the Vite dev server on `http://localhost:3000` which will connect to the Go backend on `http://localhost:8080`.
+The frontend will automatically connect to the backend at `ws://localhost:8080/ws`
+
+## Deployment
+
+This project is designed for **separated deployment**:
+- **Frontend**: Deploy to Vercel
+- **Backend**: Deploy to Render
+
+See [DEPLOYMENT.md](./DEPLOYMENT.md) for detailed deployment instructions.
+
+### Quick Deployment
+
+**Backend (Render)**:
+1. Push to GitHub
+2. Create Web Service on Render
+3. Build: `go build -o app main.go`
+4. Start: `./app`
+
+**Frontend (Vercel)**:
+1. Set `VITE_BACKEND_URL=wss://your-backend.onrender.com/ws`
+2. Deploy with Vercel CLI: `vercel --prod`
+3. Or connect GitHub repo to Vercel Dashboard
 
 ## How It Works
 
@@ -125,40 +143,7 @@ The application uses a JSON-based message protocol:
 - `chat_declined` - Chat request was declined
 - `request_cancelled` - Incoming request was cancelled
 
-## Deployment
 
-### Deploy to Render
-
-1. Push your code to GitHub
-2. Connect your repository to Render
-3. Render will automatically detect `render.yaml` and use it for configuration
-4. The `build.sh` script will:
-   - Install frontend dependencies
-   - Build the React app
-   - Compile the Go server
-5. Your app will be available at your Render URL
-
-**Note**: The build process takes a few minutes as it needs to install Node.js dependencies and build the frontend.
-
-### Manual Deployment
-
-If you need to deploy manually:
-
-```bash
-# Build frontend
-cd web
-npm install
-npm run build
-cd ..
-
-# Build Go binary
-go build -o app main.go
-
-# Run
-./app
-```
-
-The server will use the `PORT` environment variable if available, or default to 8080.
 
 ## License
 

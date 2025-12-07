@@ -12,12 +12,22 @@ class WebSocketBackend {
   private wsUrl: string;
 
   constructor() {
-    // Detect if we're in development (localhost:3000) or production
-    const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-    const host = window.location.host === 'localhost:3000' || window.location.host.includes('localhost:3000')
-      ? 'localhost:8080'  // Dev: connect to Go server directly
-      : window.location.host; // Production: same host
-    this.wsUrl = `${protocol}//${host}/ws`;
+    // Get backend URL from environment variable or use defaults
+    const backendUrl = import.meta.env.VITE_BACKEND_URL;
+    
+    if (backendUrl) {
+      // Use explicit backend URL from environment
+      this.wsUrl = backendUrl;
+    } else {
+      // Development fallback
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host.includes('localhost')
+        ? 'localhost:8080'  // Local dev
+        : 'radiuschat.onrender.com'; // Production backend
+      this.wsUrl = `${protocol}//${host}/ws`;
+    }
+    
+    console.log('WebSocket connecting to:', this.wsUrl);
   }
 
   public connect(name: string, lat: number, lon: number): string {

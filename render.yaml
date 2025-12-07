@@ -1,6 +1,9 @@
 services:
   - type: web
-    name: radiuschat
+    name: radiuschat-backend
     runtime: go
-    buildCommand: chmod +x build.sh && ./build.sh
+    buildCommand: go build -o app main.go
     startCommand: ./app
+    envVars:
+      - key: PORT
+        sync: false

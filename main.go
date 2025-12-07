@@ -333,9 +333,13 @@ func main() {
 	hub := newHub()
 	go hub.run()
 
-	// Serve static files from web/dist
-	fs := http.FileServer(http.Dir("./web/dist"))
-	http.Handle("/", fs)
+	// Health check endpoint
+	http.HandleFunc("/health", func(w http.ResponseWriter, r *http.Request) {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+		w.Write([]byte(`{"status":"ok","service":"radiuschat-backend"}`))
+	})
+
 	// WebSocket endpoint
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
@@ -347,8 +351,9 @@ func main() {
 		port = "8080"
 	}
 
-	log.Printf("Server started on :%s\n", port)
-	log.Printf("Visit http://localhost:%s in your browser\n", port)
+	log.Printf("RadiusChat Backend Server started on :%s\n", port)
+	log.Printf("WebSocket endpoint: ws://localhost:%s/ws\n", port)
+	log.Printf("Health check: http://localhost:%s/health\n", port)
 	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
