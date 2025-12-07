@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anonymous Location Chat</title>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+        integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+    <link href="https://fonts.googleapis.com/css?family=Roboto:400,900" rel="stylesheet">
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+    <div id="sidebar" class="box left quarter">
+        <div class="mast">
+            <img class="logo" src="logo.png" alt="Logo" style="max-height: 40px; vertical-align: middle;">
+            <h1 style="display: inline-block; vertical-align: middle; margin-left: 10px;">Proximity Chat</h1>
+        </div>
+
+        <!-- Login Section -->
+        <div id="login-section" class="info">
+            <p>Enter your name to join the map.</p>
+            <input type="text" id="username-input" class="input" placeholder="Your Name" autocomplete="off">
+            <button id="join-btn" class="btn-primary">Join Map</button>
+            <button id="locate-btn" class="btn-secondary" style="margin-top: 10px;">Locate Me</button>
+        </div>
+
+        <!-- Chat Section (Hidden initially) -->
+        <div id="chat-section" class="hidden">
+            <div class="info">
+                <span id="chat-status">Idle</span>
+                <button id="leave-chat-btn" class="btn-small hidden">End Chat</button>
+            </div>
+            <div id="messages" class="messages"></div>
+            <input type="text" id="message-input" class="input" placeholder="Type a message..." disabled>
+        </div>
+    </div>
+
+    <div id="map"></div>
+
+    <!-- Request Modal (Overlay) -->
+    <div id="request-modal" class="modal hidden">
+        <div class="card">
+            <h3>Chat Request</h3>
+            <p><span id="requester-name">User</span> wants to chat with you.</p>
+            <div class="actions">
+                <button id="accept-btn" class="btn-primary">Accept</button>
+                <button id="decline-btn" class="btn-secondary">Decline</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Connect Modal (Overlay) -->
+    <div id="connect-modal" class="modal hidden">
+        <div class="card">
+            <h3>Connect?</h3>
+            <p>Do you want to request a chat with <span id="connect-target-name">User</span>?</p>
+            <div class="actions">
+                <button id="connect-confirm-btn" class="btn-primary">Connect</button>
+                <button id="connect-cancel-btn" class="btn-secondary">Cancel</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Waiting Modal (Overlay) -->
+    <div id="waiting-modal" class="modal hidden">
+        <div class="card">
+            <h3>Waiting...</h3>
+            <p>Waiting for <span id="waiting-target-name">User</span> to accept...</p>
+            <div class="actions">
+                <button id="waiting-cancel-btn" class="btn-secondary">Cancel Request</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+        integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <script src="app.js"></script>
+</body>
+
+</html>
