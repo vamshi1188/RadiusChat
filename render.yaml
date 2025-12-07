@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: radiuschat
+    runtime: go
+    buildCommand: chmod +x build.sh && ./build.sh
+    startCommand: ./app

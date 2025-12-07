@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"log"
 	"net/http"
+	"os"
 	"sync"
 
 	"github.com/gorilla/websocket"
@@ -335,15 +336,20 @@ func main() {
 	// Serve static files from web/dist
 	fs := http.FileServer(http.Dir("./web/dist"))
 	http.Handle("/", fs)
-
 	// WebSocket endpoint
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
 	})
 
-	log.Println("Server started on :8080")
-	log.Println("Visit http://localhost:8080 in your browser")
-	err := http.ListenAndServe(":8080", nil)
+	// Get port from environment or default to 8080
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080"
+	}
+
+	log.Printf("Server started on :%s\n", port)
+	log.Printf("Visit http://localhost:%s in your browser\n", port)
+	err := http.ListenAndServe(":"+port, nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
 	}

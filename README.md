@@ -125,6 +125,41 @@ The application uses a JSON-based message protocol:
 - `chat_declined` - Chat request was declined
 - `request_cancelled` - Incoming request was cancelled
 
+## Deployment
+
+### Deploy to Render
+
+1. Push your code to GitHub
+2. Connect your repository to Render
+3. Render will automatically detect `render.yaml` and use it for configuration
+4. The `build.sh` script will:
+   - Install frontend dependencies
+   - Build the React app
+   - Compile the Go server
+5. Your app will be available at your Render URL
+
+**Note**: The build process takes a few minutes as it needs to install Node.js dependencies and build the frontend.
+
+### Manual Deployment
+
+If you need to deploy manually:
+
+```bash
+# Build frontend
+cd web
+npm install
+npm run build
+cd ..
+
+# Build Go binary
+go build -o app main.go
+
+# Run
+./app
+```
+
+The server will use the `PORT` environment variable if available, or default to 8080.
+
 ## License
 
 MIT
