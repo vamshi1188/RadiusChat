@@ -295,14 +295,9 @@ func (c *Client) writePump() {
 	defer func() {
 		c.conn.Close()
 	}()
-	for {
-		select {
-		case message, ok := <-c.send:
-			if !ok {
-				c.conn.WriteMessage(websocket.CloseMessage, []byte{})
-				return
-			}
-			c.conn.WriteMessage(websocket.TextMessage, message)
+	for message := range c.send {
+		if err := c.conn.WriteMessage(websocket.TextMessage, message); err != nil {
+			return
 		}
 	}
 }
@@ -337,12 +332,17 @@ func main() {
 	hub := newHub()
 	go hub.run()
 
-	http.Handle("/", http.FileServer(http.Dir("./static")))
+	// Serve static files from web/dist
+	fs := http.FileServer(http.Dir("./web/dist"))
+	http.Handle("/", fs)
+
+	// WebSocket endpoint
 	http.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
 		serveWs(hub, w, r)
 	})
 
 	log.Println("Server started on :8080")
+	log.Println("Visit http://localhost:8080 in your browser")
 	err := http.ListenAndServe(":8080", nil)
 	if err != nil {
 		log.Fatal("ListenAndServe: ", err)
